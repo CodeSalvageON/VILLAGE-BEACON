@@ -1,0 +1,73 @@
+@font-face {
+  font-family: ROMANSEX;
+  src: url("/static/ROMANSEX.ttf");
+}
+
+body {
+  user-select: none;
+  color: white;
+  font-family: ROMANSEX;
+  background-color: #796be6;
+  background-repeat: no-repeat;
+  background-position: top center;
+  background-attachment: fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  -webkit-transition: background-image 1s ease-in-out;
+  transition: background-image 3s ease-in-out;
+  background-image: url("/static/init.png");
+}
+
+p {
+  margin: 0;
+}
+
+input, button {
+  font-family: ROMANSEX;
+}
+
+#village {
+  width: 100vw;
+  height: 100vh;
+  opacity: 0.5;
+  margin: 0;
+  color: white;
+  background-color: #61af4b;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  font-size: 2vw;
+  overflow-y: auto;
+}
+
+#beacon {
+  width: 80vw;
+}
+
+#code-ping, #web-url {
+  padding: 5px;
+  font-size: 2vw;
+  border: 1px solid white;
+  background-color: #5e682cFF;
+}
+
+#code {
+  display: none;
+}
+
+#create {
+  display: none;
+}
+
+.btn {
+  padding: 5px;
+  width: 10vw;
+  border: 1px solid white;
+  background-color: #5e682cFF;
+}
+
+.btn:hover {
+  background-color: #c2bcbc;
+}
