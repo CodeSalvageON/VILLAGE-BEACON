@@ -38,7 +38,7 @@ app.post('/get', function (req, res) {
 });
 
 app.post('/make', function (req, res) {
-  const url = req.body.url;
+  const url = req.body.url.replace(",", "");
   let code = req.body.code;
 
   if (code === "" || code === null || code === undefined) {
@@ -52,13 +52,17 @@ app.post('/make', function (req, res) {
   else {
     let darArr = [];
     let largusArr = [];
-    
+
+    temp_url = "";
+
     fs.readFile('hoka.txt', 'utf8', function (err, data) {
       if (err) {
-        return console.log(err);
+        throw err;
       }
-      
-      darArr = data.split(",");
+
+      else {
+        darArr = data;
+      }
     });
 
     fs.readFile('Largus.txt', 'utf8', function (err, data) {
@@ -67,14 +71,17 @@ app.post('/make', function (req, res) {
       }
 
       else {
-        largusArr = data.split(",");
+        largusArr = data;
+
+        fs.writeFile('Largus.txt', largusArr + "," + url, function (err) {
+          if (err) {
+            throw err;
+          }
+        });
       }
     });
-
-    darArr.push(sjcl.encrypt(code, url));
-    largusArr.push(url);
     
-    fs.writeFile('hoka.txt', String(darArr), function (err) {
+    fs.writeFile('hoka.txt', darArr + "," + sjcl.encrypt(code, url), function (err) {
       if (err) {
         throw err;
       }
@@ -82,11 +89,7 @@ app.post('/make', function (req, res) {
       res.send("success");
     });
 
-    fs.writeFile('Largus.txt', String(largusArr), function (err) {
-      if (err) {
-        throw err;
-      }
-    });
+    temp_url = url;
   }
 });
 
@@ -99,36 +102,42 @@ setInterval(function () {
     if (err) {
       throw err;
     }
+    
+    hokaText = data.split(",");
+    console.log(data);
+    console.log("Largus: " + hokaText);
+    console.log("Hoka Length: " + hokaText.length);
 
-    else {
-      hokaText = data.split(",");
+    for (i = 0; i < hokaText.length; i++) {
+      console.log("Making Hoka...");
+      let opts = {
+        url : hokaText[i]
+      };
+
+      console.log(hokaText[i]);
+
+      if (hokaText[i] === null || hokaText[i] === undefined || hokaText[i] === "") {
+        // do nothing
+        console.log("not a valid URL");
+      }
+
+      else {
+        request.get(opts, function (error, response, body) {
+          if (error) {
+            throw error;
+          }
+
+          console.log(response.statusCode);
+        });
+
+        console.log("VALID ABOVE");
+      }
     }
   });
 
-  for (i = 0; i < hokaText.length; i++) {
-    let opts = {
-      url : hokaText[i]
-    };
-
-    console.log(hokaText[i]);
-
-    if (hokaText[i] === null || hokaText[i] === undefined || hokaText[i] === "") {
-      // do nothing
-    }
-
-    else {
-      request.get(opts, function (error, response, body) {
-        if (error) {
-          throw error;
-        }
-
-        console.log(response.statusCode);
-      });
-
-      console.log("VALID ABOVE");
-    }
-  }
-}, 60000);
+  console.log("Hoka pre-length: " + hokaText.length);
+  console.log("One iteration passed: " + hokaText);
+}, 30000);
 
 http.listen(port, function(){
   console.log('listening on *:' + port);
